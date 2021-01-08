@@ -92,12 +92,47 @@ def py3_image(name, base = None, deps = [], layers = [], **kwargs):
     # TODO(mattmoor): Consider using par_binary instead, so that
     # a single target can be used for all three.
 
+    data = kwargs.get("data", None)
+    compatible_with = kwargs.get("compatible_with", None)
+    deprecation = kwargs.get("deprecation", None)
+    env = kwargs.get("env", None)
+    exec_properties = kwargs.get("exec_properties", None)
+    features = kwargs.get("features", None)
+    imports = kwargs.get("imports", None)
+    legacy_create_init = kwargs.get("legacy_create_init", None)
+    licenses = kwargs.get("licenses", None)
+    main = kwargs.get("main", None)
+    output_licenses = kwargs.get("output_licenses", None)
+    restricted_to = kwargs.get("restricted_to", None)
+    srcs = kwargs.get("srcs", None)
+    srcs_version = kwargs.get("srcs_version", None)
+    stamp = kwargs.get("stamp", None)
+    testonly = kwargs.get("testonly", None)
+    toolchains = kwargs.get("toolchains", None)
+    
+
     py_binary(
         name = binary_name,
         python_version = "PY3",
         deps = deps + layers,
         exec_compatible_with = ["@io_bazel_rules_docker//platforms:run_in_container"],
-        **kwargs
+        data=data,
+        compatible_with=compatible_with,
+        deprecation=deprecation,
+        env=env,
+        exec_properties=exec_properties,
+        features=features,
+        imports=imports,
+        legacy_create_init=legacy_create_init,
+        licenses=licenses,
+        main=main,
+        output_licenses=output_licenses,
+        restricted_to=restricted_to,
+        srcs=srcs,
+        srcs_version=srcs_version,
+        stamp=stamp,
+        testonly=testonly,
+        toolchains=toolchains
     )
 
     # TODO(mattmoor): Consider making the directory into which the app
@@ -107,7 +142,16 @@ def py3_image(name, base = None, deps = [], layers = [], **kwargs):
         base = app_layer(name = "%s.%d" % (name, index), base = base, dep = dep)
         base = app_layer(name = "%s.%d-symlinks" % (name, index), base = base, dep = dep, binary = binary_name)
 
+    architechture = kwargs.get("architechture", None)
+    creation_time = kwargs.get("creation_time", None)
+    docker_run_flags = kwargs.get("docker_run_flags", None)
+    labels = kwargs.get("labels", None)
+    os_version = kwargs.get("os_version", None)
+    ports = kwargs.get("ports", None)
+    repository = kwargs.get("repository", None)
+    user = kwargs.get("user", None)
     visibility = kwargs.get("visibility", None)
+    volumes = kwargs.get("volumes", None)
     tags = kwargs.get("tags", None)
     app_layer(
         name = name,
@@ -124,4 +168,16 @@ def py3_image(name, base = None, deps = [], layers = [], **kwargs):
         # workspace directory to ensure the symlinks are valid. See
         # https://github.com/bazelbuild/rules_docker/issues/161 for details.
         create_empty_workspace_dir = True,
+        
+        architechture=architechture,
+        creation_time=creation_time,
+        docker_run_flags=docker_run_flags,
+        env=env,
+        labels=labels,
+        os_version=os_version,
+        ports=ports,
+        repository=repository,
+        stamp=stamp,
+        user=user,
+        volumes=volumes
     )

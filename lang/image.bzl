@@ -25,6 +25,10 @@ load(
     _container = "container",
 )
 load(
+    "@io_bazel_rules_docker//container:providers.bzl",
+    "LayerInfo",
+)
+load(
     "//container:layer_tools.bzl",
     _get_layers = "get_from_target",
 )
@@ -241,6 +245,8 @@ def _app_layer_impl(ctx, runfiles = None, emptyfiles = None):
 
 image = struct(
     attrs = dicts.add(_container.image.attrs, {
+        "architecture": attr.string(default = "amd64"),
+
         # The base image on which to overlay the dependency layers.
         "base": attr.label(mandatory = True),
         # The binary target for which we are synthesizing an image.
@@ -255,6 +261,7 @@ image = struct(
         # Set this to true to create an empty workspace directory under the
         # app directory specified as the 'directory' attribute.
         "create_empty_workspace_dir": attr.bool(default = False),
+        "creation_time": attr.string(),
         "data": attr.label_list(allow_files = True),
 
         # Override the defaults.
@@ -265,9 +272,20 @@ image = struct(
         # and all remaining deps of "binary" will be added under runfiles.
         "dep": attr.label(),
         "directory": attr.string(default = "/app"),
+        "docker_run_flags": attr.string(),
         "entrypoint": attr.string_list(default = []),
+        "env": attr.string_dict(default = {}),
+        "labels": attr.string_dict(),
+        "layers": attr.label_list(providers = [LayerInfo]),
         "legacy_run_behavior": attr.bool(default = False),
+        "os_version": attr.string(),
+        "ports": attr.string_list(),  # Skylark doesn't support int_list...
+        "repository": attr.string(default = "bazel"),
+        "stamp": attr.bool(default = False),
+        "user": attr.string(),
+        "volumes": attr.string_list(),
         "workdir": attr.string(default = ""),
+
     }),
     outputs = _container.image.outputs,
     toolchains = ["@io_bazel_rules_docker//toolchains/docker:toolchain_type"],
