@@ -248,5 +248,5 @@ if [[ "a$*" != "a--norun" && "%{run}" == "True" ]]; then
   cleanup
 
   # This generated and injected by docker_*.
-  exec %{run_statements}
+  exec %{run_statements} "$@"
 fi
